@@ -1,0 +1,37 @@
+{
+  "name": "AngularBasic",
+  "authors": [
+    "Nishanth15293 <777.nishanth@gmail.com>"
+  ],
+  "description": "Basic Angular App",
+  "main": "main.js",
+  "keywords": [
+    "Angular"
+  ],
+  "license": "Nishanth",
+  "homepage": "www.github.com/Nishanth15293",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "^1.5.8",
+    "jquery": "^3.1.0",
+    "bootstrap": "^3.3.7",
+    "angular-ui-router": "^0.3.1"
+  },
+  "devDependencies": {
+    "font-awesome": "fontawesome#^4.6.3"
+  },
+  "overrides": {
+    "bootstrap": {
+      "main": [
+        "dist/js/bootstrap.js",
+        "dist/css/bootstrap.css"
+      ]
+    }
+  }
+}
