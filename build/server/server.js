@@ -29,18 +29,20 @@ app.post('/login', function(req, res){
     var password = payload.password;
     var query = {email : email};
     User.findOne(query, function(err,user) {
-        // console.log("searchign please wait!");
+         console.log("searchign please wait!");
         if (err) throw err;
 
         if (!user) {
             console.log("user not found"); // send json obj stating this msg later
         }
         else if (user) {
+            console.log(user.password);
+            console.log(password);
             if (user.password == password) {
                 //var token = jwt.sign(user, app.get('superSecret'),{expiresIn:3600});
 
                 console.log("password match");
-                res.send({redirect: 'home', firstName: user.firstName});
+                res.send({dataRedirect: 'home', token: 'token', user: user.toJSON()});
             }
         }
         else {
@@ -67,11 +69,32 @@ app.post('/signup', function(req, res){
         }
         else {
             console.log('user saved sucess!');
-            res.send({dataRedirect: 'login'});
+            res.status(200).send({
+                dataRedirect: 'login',
+                user: user.toJSON(user),
+                token: 'token'
+            })
+            // res.send({dataRedirect: 'login'});
         }
     });
 
 });
+
+var profile = [
+    'name',
+    'firstName',
+    'lastName'
+];
+
+app.get('/profile', function(req,res){
+    if(!req.header.authorization){
+        return res.status(401).send({
+            message: 'You are not authorized to access this resource'
+        });
+    } 
+    res.send(profile);
+    
+})
 
 app.get('*', function(req, res) {
     res.sendFile(path.resolve(__dirname, '../build/Client/index.html'));

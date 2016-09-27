@@ -107,7 +107,7 @@ gulp.task('watch', function() {
         //gulp.watch(['Client/imgs/**/*'], ['copy']);
         gulp.watch('Client/index.html', ['refresh']);
         gulp.watch(['Client/js/**/*.js'], ['refresh']);
-        //gulp.watch(['Client/templates/**/*', 'Client/templates/*'], ['refresh']);
+        gulp.watch(['Client/templates/**/*', 'Client/templates/*'], ['refresh']);
     });
 });
 

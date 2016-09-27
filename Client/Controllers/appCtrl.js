@@ -3,7 +3,7 @@
  */
 (function(){
 angular.module('app').controller('appController',appCtrlFunction);
-    function appCtrlFunction( $state, $http) {
+    function appCtrlFunction( $state, $http, $scope, authTokenFactory) {
         console.log('in controller!');
         var appCtrl = this;
         appCtrl.signup = signup;
@@ -21,16 +21,15 @@ angular.module('app').controller('appController',appCtrlFunction);
                 email: email,
                 password: password
             };
-            console.log(payload);
 
             $http.post('/signup', payload).then(function (res) {
                 console.log(res);
+                authTokenFactory.setToken(res.data.token);
                 $state.go(res.data.dataRedirect);
             });
-
         }
 
-         function login () {
+        function login() {
             var email = appCtrl.email;
             var password = appCtrl.password;
 
@@ -41,12 +40,11 @@ angular.module('app').controller('appController',appCtrlFunction);
 
             $http.post('/login', payload).then(function (res) {
                 console.log(res.data);
-                if(res.body.token){
-                    localstorage.setItem(token, token);
+                if(res.data.token){
+                    authTokenFactory.setToken(res.data.token);
                 }
-                $state.go(Dashboard);
+                $state.go('profile');
             });
         }
-
     }
 })();

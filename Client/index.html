@@ -24,15 +24,13 @@
     <!-- endbuild -->
 </head>
 <body>
-<ul class="nav nav-tabs pull-right">
-    <li ui-sref-active="active"><a ui-sref="home" aria-expanded="false">Home</a></li>
-    <li ui-sref-active="active"><a ui-sref="profile" aria-expanded="true">Profile</a></li>
-    <li ui-sref-active="active"><a ui-sref="signup" aria-expanded="true">Sign Up</a></li>
-    <li ui-sref-active="active"><a ui-sref="login" aria-expanded="true">log In</a></li>
 
-
-</ul>
-<div ui-view ></div>
+<app-header></app-header>
+<div class="row">
+    <div class = "ui-view-container">
+        <div ui-view ></div>
+    </div>
+</div>
 <!--defer-->
 <!-- build:js js/lib.js -->
 <!-- bower:js -->
@@ -40,6 +38,7 @@
 <script src="/bower_components/jquery/dist/jquery.js"></script>
 <script src="/bower_components/bootstrap/dist/js/bootstrap.js"></script>
 <script src="/bower_components/angular-ui-router/release/angular-ui-router.js"></script>
+<script src="/bower_components/angular-animate/angular-animate.js"></script>
 <!-- endbower -->
 <!-- endbuild -->
 <!--enddefer-->
@@ -49,9 +48,15 @@
 <script src="/Client/js/app.js"></script>
 <script src="/Client/js/config.js"></script>
 <script src="/Client/Controllers/appCtrl.js"></script>
+<script src="/Client/Controllers/logoutController.js"></script>
+<script src="/Client/Controllers/profileController.js"></script>
+<script src="/Client/directives/headerDirective.js"></script>
 <script src="/Client/js/main.js"></script>
 <script src="/Client/js/run.js"></script>
 <script src="/Client/js/templatesCache.js"></script>
+<script src="/Client/Services/authInterceptor.js"></script>
+<script src="/Client/Services/authServiceFactory.js"></script>
+<script src="/Client/Services/authTokenFactory.js"></script>
 <script src="/Client/Services/httpService.js"></script>
 <!-- endinject -->
 <!-- endbuild -->

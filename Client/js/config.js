@@ -2,7 +2,16 @@
  * Created by Nishanth on 8/30/2016.
  */
 
-angular.module('app').config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
+angular.module('app').config(config);
+
+config.$inject = [
+    '$httpProvider',
+    '$stateProvider',
+    '$urlRouterProvider'
+];
+
+function config($httpProvider, $stateProvider, $urlRouterProvider) {
+    console.log($httpProvider);
 
     $urlRouterProvider.otherwise('/');
 
@@ -10,7 +19,16 @@ angular.module('app').config(['$stateProvider', '$urlRouterProvider', function($
         .state('home', {
             url: "/home",
             templateUrl: '/Client/Partials/home.html',
-            controller: 'appController'
+            controller: 'appController',
+            controllerAs:'appCtrl'
+        })
+
+        .state('profile', {
+            url: "/profile",
+            templateUrl: '/Client/Partials/profile.html',
+            controller: 'profileController',
+            controllerAs: 'profileCtrl'
+
         })
 
         .state('about', {
@@ -32,8 +50,11 @@ angular.module('app').config(['$stateProvider', '$urlRouterProvider', function($
             controllerAs:'appCtrl'
         })
 
-        .state('dashboard', {
-            url:'/dashboard',
-            template:'<div><h1>Dashboard!!</h1></div>'
+        .state('logout', {
+            url:'/logout',
+            controller: 'logoutController',
+            controllerAs: 'logoutCtrl'
         })
-}]);
+
+        $httpProvider.interceptors.push('authInterceptor');
+};

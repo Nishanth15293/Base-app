@@ -12,15 +12,13 @@
     <link rel="stylesheet" href="styles/app.css">
 </head>
 <body>
-<ul class="nav nav-tabs pull-right">
-    <li ui-sref-active="active"><a ui-sref="home" aria-expanded="false">Home</a></li>
-    <li ui-sref-active="active"><a ui-sref="profile" aria-expanded="true">Profile</a></li>
-    <li ui-sref-active="active"><a ui-sref="signup" aria-expanded="true">Sign Up</a></li>
-    <li ui-sref-active="active"><a ui-sref="login" aria-expanded="true">log In</a></li>
 
-
-</ul>
-<div ui-view ></div>
+<app-header></app-header>
+<div class="row">
+    <div class = "ui-view-container">
+        <div ui-view ></div>
+    </div>
+</div>
 <!--defer-->
 <script src="js/lib.js"></script>
 <!--enddefer-->
