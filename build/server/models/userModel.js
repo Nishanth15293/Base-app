@@ -26,6 +26,10 @@ UserSchema.methods.toJSON = function(){
     return user; 
 };
 
+UserSchema.methods.comparePassword = function(password, callback){
+    bcrypt.compare(password, this.password, callback);
+};
+
 UserSchema.pre('save', function(next) {
     var user = this;
 
