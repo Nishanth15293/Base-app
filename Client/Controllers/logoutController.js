@@ -10,6 +10,6 @@ logoutController.$inject = [
 
 function logoutController(authTokenFactory, $state){
 	authTokenFactory.removeToken();
-	$state.go('home');
+	$state.go('login');
 }
 })();

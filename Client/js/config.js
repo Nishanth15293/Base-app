@@ -56,5 +56,12 @@ function config($httpProvider, $stateProvider, $urlRouterProvider) {
             controllerAs: 'logoutCtrl'
         })
 
+        .state('dashboard', {
+            url:'/dashboard',
+            templateUrl: '/Client/Partials/dashboard.html',
+            controller: 'dashboardController',
+            controllerAs: 'dashboardCtrl'
+        })
+
         $httpProvider.interceptors.push('authInterceptor');
 };

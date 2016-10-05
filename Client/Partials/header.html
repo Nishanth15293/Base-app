@@ -6,11 +6,14 @@
 	    <li ng-show="headerCtrl.isAuthenticated()" ui-sref-active="active">
 	    	<a ui-sref="profile" aria-expanded="false">Profile</a>
 	    </li>
-	    <li ng-hide="headerCtrl.isAuthenticated()" ui-sref-active="active">
+	    <!-- <li ng-hide="headerCtrl.isAuthenticated()" ui-sref-active="active">
 	    	<a ui-sref="signup" aria-expanded="true">Sign Up</a>
-	    </li>
+	    </li> -->
 	    <li ng-hide="headerCtrl.isAuthenticated()" ui-sref-active="active">
 	    	<a ui-sref="login" aria-expanded="true">log In</a>
+	    </li>
+	    <li ng-show="headerCtrl.isAuthenticated()" ui-sref-active="active">
+	    	<a ui-sref="dashboard" aria-expanded="false">Dashboard</a>
 	    </li>
 	    <li ng-show="headerCtrl.isAuthenticated()" ui-sref-active="active">
 	    	<a ui-sref="logout" aria-expanded="false">Logout</a>

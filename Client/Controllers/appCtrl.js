@@ -23,7 +23,6 @@ angular.module('app').controller('appController',appCtrlFunction);
             };
 
             $http.post('/signup', payload).then(function (res) {
-                console.log(res);
                 authTokenFactory.setToken(res.data.token);
                 $state.go(res.data.dataRedirect);
             });
@@ -39,11 +38,10 @@ angular.module('app').controller('appController',appCtrlFunction);
             };
 
             $http.post('/login', payload).then(function (res) {
-                console.log(res.data);
                 if(res.data.token){
                     authTokenFactory.setToken(res.data.token);
                 }
-                $state.go('profile');
+                $state.go(res.data.dataRedirect);
             });
         }
     }

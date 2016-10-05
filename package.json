@@ -44,6 +44,8 @@
     "inject": "^1.0.0-beta2",
     "jwt-simple": "^0.5.0",
     "merge-stream": "^1.0.0",
+    "passport": "^0.3.2",
+    "passport-local": "^1.0.0",
     "run-sequence": "^1.1.2",
     "wiredep": "^4.0.0"
   },

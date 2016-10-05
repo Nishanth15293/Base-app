@@ -3,23 +3,30 @@
  */
 var express = require('express');
 var mongoose = require('mongoose');
+mongoose.connect('mongodb://localhost:27017/angular2');
 var bodyParser = require('body-parser');
 var path = require('path');
 var app = express();
 var jwt = require('jwt-simple');
 var User = require('./models/userModel');
 var CONFIG = require('./config');
+var passport = require('passport');
+var localStrategy = require('passport-local').strategy;
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.user(passport.initialize());
+
+passport.serializeUser(function(user, done){
+    done(null, user.id);
+})
 
 app.use('/js', express.static(path.resolve(__dirname, '../build/Client/js')));
 app.use('/styles', express.static(path.resolve(__dirname, '../build/Client/styles')));
-//app.use('/bower_components', express.static(path.resolve(__dirname, '../bower_components')));
 
+var strategy = new localStrategy();
 
-
-mongoose.connect('mongodb://localhost:27017/angular2');
+passport.use(strategy);
 
 function createSendToken(req, res, user){
     var payload = {
@@ -29,7 +36,7 @@ function createSendToken(req, res, user){
     console.log(CONFIG.jwt_secret);
     var token = jwt.encode(payload, CONFIG.jwt_secret);
     res.status(200).send({
-        dataRedirect: 'login',
+        dataRedirect: 'dashboard',
         user: user.toJSON(user),
         token: token
     })
@@ -37,14 +44,10 @@ function createSendToken(req, res, user){
 
 app.post('/login', function(req, res){
     var payload = req.body;
-    console.log(payload);
-    console.log(req.body);
-
     var email = payload.email;
     var password = payload.password;
     var query = {email : email};
     User.findOne(query, function(err,user) {
-         console.log("searchign please wait!");
         if (err) throw err;
 
         if (!user) {
