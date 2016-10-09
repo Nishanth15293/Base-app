@@ -19,8 +19,6 @@ function config($httpProvider, $stateProvider, $urlRouterProvider) {
         .state('home', {
             url: "/home",
             templateUrl: '/Client/Partials/home.html',
-            controller: 'appController',
-            controllerAs:'appCtrl'
         })
 
         .state('profile', {
@@ -39,15 +37,15 @@ function config($httpProvider, $stateProvider, $urlRouterProvider) {
         .state('signup', {
             url: '/signup',
             templateUrl:'/Client/Partials/signupTemplate.html',
-            controller: 'appController',
-            controllerAs:'appCtrl'
+            controller: 'signupController',
+            controllerAs:'signupCtrl'
         })
 
         .state('login', {
             url: '/login',
             templateUrl: '/Client/Partials/loginTemplate.html',
-            controller: 'appController',
-            controllerAs:'appCtrl'
+            controller: 'loginController',
+            controllerAs:'loginCtrl'
         })
 
         .state('logout', {
