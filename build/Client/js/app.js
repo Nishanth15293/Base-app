@@ -80,9 +80,9 @@ signupController.$inject = [
     '$state',
     '$http',
     '$scope',
-    'authTokenFactory'
+    'authServiceFactory'
 ];
-    function signupController( $state, $http, $scope, authTokenFactory) {
+    function signupController( $state, $http, $scope, authServiceFactory) {
         var signupCtrl = this;
         signupCtrl.signup = signup;
 
@@ -99,10 +99,18 @@ signupController.$inject = [
                 password: password
             };
 
-            $http.post('/signup', payload).then(function (res) {
-                authTokenFactory.setToken(res.data.token);
-                $state.go(res.data.dataRedirect);
-            });
+            // $http.post('/signup', payload).then(function (res) {
+            //     authTokenFactory.setToken(res.data.token);
+            //     $state.go(res.data.dataRedirect);
+            // });
+            authServiceFactory.signup('/signup', payload)
+                .success(function(res){
+                    console.log('Thanks for signing up ' + res.user.email + '!');
+                })
+                .error(function(res){
+                    console.log('Something went wrong, Please try again!');
+                })
+
         }
     }
 })();
@@ -124,10 +132,10 @@ angular.module('app').controller('loginController', loginController);
 loginController.$inject = [
 	'$state',
 	'$http',
-	'authTokenFactory'
+	'authServiceFactory'
 ];
 
-function loginController($state, $http, authTokenFactory){
+function loginController($state, $http, authServiceFactory){
     var loginCtrl = this;
 	loginCtrl.login = login;
 
@@ -140,12 +148,13 @@ function loginController($state, $http, authTokenFactory){
             password: password
         };
 
-        $http.post('/login', payload).then(function (res) {
-            if(res.data.token){
-                authTokenFactory.setToken(res.data.token);
-            }
-            $state.go(res.data.dataRedirect);
-        });
+        authServiceFactory.login('/login', payload)
+        		.success(function(res){
+        			console.log('Thanks for coming back ' + res.user.email + '!');
+        		})
+        		.error(function(res){
+        			console.log('Something went wrong, Please try again!');
+        		})
     }	
 }
 })();
@@ -271,33 +280,30 @@ function authInterceptor(authTokenFactory){
 angular.module('app').factory('authServiceFactory', authServiceFactory);
 
 authServiceFactory.$inject = [
-	'$q',
 	'$http',
-	'$rootScope'
+    '$state',
+    'authTokenFactory'
 ];
 
-function authServiceFactory($q, $http, $rootScope){
+function authServiceFactory($http, $state, authTokenFactory){
 	var service = {
 		login : loginHandler,
-		logout : logoutHandler
+		signup : signupHandler
 	};
 
 	return service;
 
 	function loginHandler(url, cred) {
-            return $http.post(url, cred).then(function (response) {
-                if (response.data.error) {
-                    return response.data;
-                }
-                else {
-                    
-                    return 'success';
-                }
-            });
+            return $http.post(url, cred).success(authSuccessful);
         }
 
-    function logoutHandler() {
-        
+    function signupHandler(url,cred) {
+        return $http.post(url,cred).success(authSuccessful);
+    }
+
+    function authSuccessful(res){
+        authTokenFactory.setToken(res.token);
+        $state.go('dashboard');
     }
 }
 

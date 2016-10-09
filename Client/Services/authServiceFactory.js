@@ -3,33 +3,30 @@
 angular.module('app').factory('authServiceFactory', authServiceFactory);
 
 authServiceFactory.$inject = [
-	'$q',
 	'$http',
-	'$rootScope'
+    '$state',
+    'authTokenFactory'
 ];
 
-function authServiceFactory($q, $http, $rootScope){
+function authServiceFactory($http, $state, authTokenFactory){
 	var service = {
 		login : loginHandler,
-		logout : logoutHandler
+		signup : signupHandler
 	};
 
 	return service;
 
 	function loginHandler(url, cred) {
-            return $http.post(url, cred).then(function (response) {
-                if (response.data.error) {
-                    return response.data;
-                }
-                else {
-                    
-                    return 'success';
-                }
-            });
+            return $http.post(url, cred).success(authSuccessful);
         }
 
-    function logoutHandler() {
-        
+    function signupHandler(url,cred) {
+        return $http.post(url,cred).success(authSuccessful);
+    }
+
+    function authSuccessful(res){
+        authTokenFactory.setToken(res.token);
+        $state.go('dashboard');
     }
 }
 

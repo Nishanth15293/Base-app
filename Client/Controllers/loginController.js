@@ -4,10 +4,10 @@ angular.module('app').controller('loginController', loginController);
 loginController.$inject = [
 	'$state',
 	'$http',
-	'authTokenFactory'
+	'authServiceFactory'
 ];
 
-function loginController($state, $http, authTokenFactory){
+function loginController($state, $http, authServiceFactory){
     var loginCtrl = this;
 	loginCtrl.login = login;
 
@@ -20,12 +20,13 @@ function loginController($state, $http, authTokenFactory){
             password: password
         };
 
-        $http.post('/login', payload).then(function (res) {
-            if(res.data.token){
-                authTokenFactory.setToken(res.data.token);
-            }
-            $state.go(res.data.dataRedirect);
-        });
+        authServiceFactory.login('/login', payload)
+        		.success(function(res){
+        			console.log('Thanks for coming back ' + res.user.email + '!');
+        		})
+        		.error(function(res){
+        			console.log('Something went wrong, Please try again!');
+        		})
     }	
 }
 })();
