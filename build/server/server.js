@@ -12,6 +12,7 @@ var User = require('./models/userModel');
 var CONFIG = require('./config');
 var passport = require('passport');
 var localStrategy = require('passport-local').Strategy;
+var request = require('request');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -134,8 +135,61 @@ app.get('/profile', function(req,res){
         });
     } 
 
+    console.log(payload);
     res.send(profile);
     
+})
+
+app.post('/auth/google', function(req, res){
+    var params = {
+        client_id: req.body.clientId,
+        redirect_uri: req.body.redirectUri,
+        code: req.body.code,
+        grant_type : 'authorization_code',
+        client_secret: 'E6RkvKbJRNP4e3aoPGi9LzOK'
+    }
+
+    var url = 'https://www.googleapis.com/oauth2/v4/token';
+    var apiUrl = 'https://www.googleapis.com/plus/v1/people/me';
+    request.post(url, {
+        json : true, 
+        form : params
+    }, function(err, response, token){
+        var accessToken = token.access_token;
+        var headers = {
+            Authorization : 'Bearer ' + accessToken
+        }
+
+        request.get({
+            url: apiUrl,
+            json: true, 
+            headers: headers
+        }, function(err, response, profile){
+            // console.log(profile);
+            User.findOne({googleId:profile.id}, function(err, foundUser){
+                if(err) throw err;
+
+                if(foundUser){
+                    return createSendToken(req, res, foundUser);
+                }
+
+                var newUser = new User();
+                newUser.googleId = profile.id;
+                newUser.firstName = profile.name.givenName;
+                newUser.lastName = profile.name.familyName;
+                newUser.displayName = profile.displayName;
+                //can get other data as profile.emails.value, profile.tagline, profile.image.url 
+
+                newUser.save(function(err){
+                    if(err){
+                        return next(err);  
+                    } 
+
+                    createSendToken(req, res, newUser);
+                })
+            })
+        })
+    });
 })
 
 app.get('*', function(req, res) {

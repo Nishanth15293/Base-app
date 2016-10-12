@@ -11,7 +11,6 @@ config.$inject = [
 ];
 
 function config($httpProvider, $stateProvider, $urlRouterProvider) {
-    console.log($httpProvider);
 
     $urlRouterProvider.otherwise('/');
 

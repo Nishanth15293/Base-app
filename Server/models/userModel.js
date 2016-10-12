@@ -16,7 +16,14 @@ var UserSchema = new Schema({
     },
     password: {
         type: String
+    },
+    googleId: {
+        type: String
+    }, 
+    displayName: {
+        type: String
     }
+
 });
 
 UserSchema.methods.toJSON = function(){

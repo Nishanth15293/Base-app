@@ -10,6 +10,7 @@ loginController.$inject = [
 function loginController($state, $http, authServiceFactory){
     var loginCtrl = this;
 	loginCtrl.login = login;
+	loginCtrl.googleLogin = googleLogin;
 
 	function login() {
         var email = loginCtrl.email;
@@ -28,5 +29,13 @@ function loginController($state, $http, authServiceFactory){
         			console.log('Something went wrong, Please try again!');
         		})
     }	
+
+    function googleLogin() {
+    	authServiceFactory.googleAuth().then(function(res){
+    		console.log('Thanks for signing in' + res.user.displayName + '!');
+    	}, function(err){
+    		console.log('Something went wrong, Please try again!');
+    	});
+    }
 }
 })();

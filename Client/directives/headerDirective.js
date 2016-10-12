@@ -24,7 +24,6 @@ headerController.$inject =['authTokenFactory']
 function headerController(authTokenFactory){
 	var self = this;
 	self.isAuthenticated = authTokenFactory.isAuthenticated;
-	console.log(self.isAuthenticated);
 }
 
 })();
