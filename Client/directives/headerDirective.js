@@ -19,11 +19,11 @@ function appHeader(){
 	return directive;
 }
 
-headerController.$inject =['authTokenFactory']
+headerController.$inject =['$auth']
 
-function headerController(authTokenFactory){
+function headerController($auth){
 	var self = this;
-	self.isAuthenticated = authTokenFactory.isAuthenticated;
+	self.isAuthenticated = $auth.isAuthenticated;
 }
 
 })();

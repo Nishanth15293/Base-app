@@ -7,10 +7,11 @@ angular.module('app').config(config);
 config.$inject = [
     '$httpProvider',
     '$stateProvider',
-    '$urlRouterProvider'
+    '$urlRouterProvider',
+    '$authProvider'
 ];
 
-function config($httpProvider, $stateProvider, $urlRouterProvider) {
+function config($httpProvider, $stateProvider, $urlRouterProvider, $authProvider) {
 
     $urlRouterProvider.otherwise('/');
 
@@ -58,6 +59,11 @@ function config($httpProvider, $stateProvider, $urlRouterProvider) {
             templateUrl: '/Client/Partials/dashboard.html',
             controller: 'dashboardController',
             controllerAs: 'dashboardCtrl'
+        })
+        $authProvider.loginUrl = '/login'
+        $authProvider.signupUrl = '/signup'
+        $authProvider.google({
+            clientId: '299585083072-vt5ot91ldob4fnnjpfjnke4vgrisd3bp.apps.googleusercontent.com'
         })
 
         $httpProvider.interceptors.push('authInterceptor');

@@ -13,6 +13,7 @@ var CONFIG = require('./config');
 var passport = require('passport');
 var localStrategy = require('passport-local').Strategy;
 var request = require('request');
+var moment = require('moment');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -94,7 +95,8 @@ passport.use('local-login', loginStrategy);
 function createSendToken(req, res, user){
     var payload = {
         iss: req.hostname,
-        sub: user.id
+        sub: user.id,
+        exp: moment().add(2, 'days').unix()
     }
     var token = jwt.encode(payload, CONFIG.jwt_secret);
     res.status(200).send({
@@ -135,7 +137,6 @@ app.get('/profile', function(req,res){
         });
     } 
 
-    console.log(payload);
     res.send(profile);
     
 })

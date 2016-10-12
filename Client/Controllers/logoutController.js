@@ -4,12 +4,12 @@
 angular.module('app').controller('logoutController', logoutController);
 
 logoutController.$inject = [
-	'authTokenFactory',
+	'$auth',
 	'$state'
 ];
 
-function logoutController(authTokenFactory, $state){
-	authTokenFactory.removeToken();
+function logoutController($auth, $state){
+	$auth.logout();
 	$state.go('login');
 }
 })();

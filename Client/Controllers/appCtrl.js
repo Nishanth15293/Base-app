@@ -8,9 +8,9 @@ signupController.$inject = [
     '$state',
     '$http',
     '$scope',
-    'authServiceFactory'
+    '$auth'
 ];
-    function signupController( $state, $http, $scope, authServiceFactory) {
+    function signupController( $state, $http, $scope, $auth) {
         var signupCtrl = this;
         signupCtrl.signup = signup;
 
@@ -31,11 +31,12 @@ signupController.$inject = [
             //     authTokenFactory.setToken(res.data.token);
             //     $state.go(res.data.dataRedirect);
             // });
-            authServiceFactory.signup('/signup', payload)
-                .success(function(res){
-                    console.log('Thanks for signing up ' + res.user.email + '!');
+            $auth.signup(payload)
+                .then(function(res){
+                    console.log('Thanks for signing up ' + res.data.user.email + '!');
+                    $state.go('dashboard');
                 })
-                .error(function(res){
+                .catch(function(res){
                     console.log('Something went wrong, Please try again!');
                 })
 
