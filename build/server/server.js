@@ -55,9 +55,6 @@ var loginStrategy = new localStrategy(strategyOptions, function(req, email, pass
 
             });
         }
-        // else {
-        //     return done(null, false, {message: 'Username or Password is incorrect'});
-        // }
     })
 });
 

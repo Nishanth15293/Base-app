@@ -5,10 +5,9 @@ loginController.$inject = [
 	'$state',
 	'$http',
 	'$auth',
-	'authServiceFactory'
 ];
 
-function loginController($state, $http, $auth, authServiceFactory){
+function loginController($state, $http, $auth){
     var loginCtrl = this;
 	loginCtrl.login = login;
 	loginCtrl.authenticate = authenticate;

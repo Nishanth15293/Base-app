@@ -34,6 +34,7 @@ signupController.$inject = [
             $auth.signup(payload)
                 .then(function(res){
                     console.log('Thanks for signing up ' + res.data.user.email + '!');
+                    $auth.setToken(res.data.token);
                     $state.go('dashboard');
                 })
                 .catch(function(res){
