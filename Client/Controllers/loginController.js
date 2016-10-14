@@ -33,7 +33,8 @@ function loginController($state, $http, $auth){
     }	
 
     function authenticate(provider) {
-    	$auth.authenticate('google').then(function(res){
+    	$auth.authenticate(provider).then(function(res){
+            console.log(res.data);
     		console.log('Thanks for signing in' + res.data.user.displayName + '!');
     		$state.go('dashboard');
     	}, function(err){

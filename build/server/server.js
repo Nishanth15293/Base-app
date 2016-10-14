@@ -9,11 +9,13 @@ var path = require('path');
 var app = express();
 var jwt = require('jwt-simple');
 var User = require('./models/userModel');
-var CONFIG = require('./config');
+var config = require('./services/config');
 var passport = require('passport');
 var localStrategy = require('passport-local').Strategy;
 var request = require('request');
-var moment = require('moment');
+var facebookAuth = require('./routes/facebookAuth');
+var createSendToken = require('./services/jwt');
+
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -89,20 +91,6 @@ var registerStrategy = new localStrategy(strategyOptions, function(req, email, p
 passport.use('local-register', registerStrategy);
 passport.use('local-login', loginStrategy);
 
-function createSendToken(req, res, user){
-    var payload = {
-        iss: req.hostname,
-        sub: user.id,
-        exp: moment().add(2, 'days').unix()
-    }
-    var token = jwt.encode(payload, CONFIG.jwt_secret);
-    res.status(200).send({
-        dataRedirect: 'dashboard',
-        user: user.toJSON(user),
-        token: token
-    })
-};
-
 app.post('/login', passport.authenticate('local-login'), function(req, res){
     createSendToken(req, res, req.user);
 });
@@ -110,6 +98,8 @@ app.post('/login', passport.authenticate('local-login'), function(req, res){
 app.post('/signup', passport.authenticate('local-register'), function(req, res){
     createSendToken(req, res, req.user);
 });
+
+app.post('/auth/facebook', facebookAuth);
 
 var profile = [
     'name',
@@ -120,7 +110,7 @@ var profile = [
 app.get('/profile', function(req,res){
 
     var token = req.headers.authorization.split(' ')[1];
-    var payload = jwt.decode(token, CONFIG.jwt_secret);
+    var payload = jwt.decode(token, config.jwt_secret);
 
     if(!payload.sub){
         res.status(401).send({

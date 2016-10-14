@@ -20,6 +20,9 @@ var UserSchema = new Schema({
     googleId: {
         type: String
     }, 
+    facebookId: {
+        type: String
+    }, 
     displayName: {
         type: String
     }

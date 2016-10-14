@@ -72,6 +72,9 @@ function config($httpProvider, $stateProvider, $urlRouterProvider, $authProvider
         $authProvider.google({
             clientId: '299585083072-vt5ot91ldob4fnnjpfjnke4vgrisd3bp.apps.googleusercontent.com'
         })
+        $authProvider.facebook({
+            clientId: '828161080654703'
+        })
 
         $httpProvider.interceptors.push('authInterceptor');
 };
@@ -168,7 +171,7 @@ function loginController($state, $http, $auth){
     }	
 
     function authenticate(provider) {
-    	$auth.authenticate('google').then(function(res){
+    	$auth.authenticate(provider).then(function(res){
     		console.log('Thanks for signing in' + res.data.user.displayName + '!');
     		$state.go('dashboard');
     	}, function(err){

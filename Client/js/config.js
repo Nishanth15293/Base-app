@@ -65,6 +65,9 @@ function config($httpProvider, $stateProvider, $urlRouterProvider, $authProvider
         $authProvider.google({
             clientId: '299585083072-vt5ot91ldob4fnnjpfjnke4vgrisd3bp.apps.googleusercontent.com'
         })
+        $authProvider.facebook({
+            clientId: '828161080654703'
+        })
 
         $httpProvider.interceptors.push('authInterceptor');
 };
