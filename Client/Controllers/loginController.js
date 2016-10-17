@@ -5,9 +5,10 @@ loginController.$inject = [
 	'$state',
 	'$http',
 	'$auth',
+    '$window'
 ];
 
-function loginController($state, $http, $auth){
+function loginController($state, $http, $auth, $window){
     var loginCtrl = this;
 	loginCtrl.login = login;
 	loginCtrl.authenticate = authenticate;
@@ -24,6 +25,7 @@ function loginController($state, $http, $auth){
         $auth.login(payload)
         		.then(function(res){
         			console.log('Thanks for coming back ' + res.data.user.email + '!');
+                    $window.localStorage.setItem('current_user', JSON.stringify(res.data.user));
     				$state.go('dashboard');
 
         		})
@@ -36,6 +38,7 @@ function loginController($state, $http, $auth){
     	$auth.authenticate(provider).then(function(res){
             console.log(res.data);
     		console.log('Thanks for signing in' + res.data.user.displayName + '!');
+            $window.localStorage.setItem('current_user', JSON.stringify(res.data.user));
     		$state.go('dashboard');
     	}, function(err){
     		console.log('Something went wrong, Please try again!');

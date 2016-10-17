@@ -35,6 +35,7 @@ signupController.$inject = [
                 .then(function(res){
                     console.log('Thanks for signing up ' + res.data.user.email + '!');
                     $auth.setToken(res.data.token);
+                    $window.localStorage.setItem('current_user', res.data.user);
                     $state.go('dashboard');
                 })
                 .catch(function(res){

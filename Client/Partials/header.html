@@ -3,9 +3,9 @@
 	    <li ui-sref-active="active">
 	    	<a ui-sref="home" aria-expanded="false">Home</a>{{headerCtrl.isAuthenticated}}
 	    </li>
-	    <li ng-show="headerCtrl.isAuthenticated()" ui-sref-active="active">
+	   <!--  <li ng-show="headerCtrl.isAuthenticated()" ui-sref-active="active">
 	    	<a ui-sref="profile" aria-expanded="false">Profile</a>
-	    </li>
+	    </li> -->
 	    <!-- <li ng-hide="headerCtrl.isAuthenticated()" ui-sref-active="active">
 	    	<a ui-sref="signup" aria-expanded="true">Sign Up</a>
 	    </li> -->
@@ -17,6 +17,11 @@
 	    </li>
 	    <li ng-show="headerCtrl.isAuthenticated()" ui-sref-active="active">
 	    	<a ui-sref="logout" aria-expanded="false">Logout</a>
+	    </li>
+	    
+	    <li ng-show="headerCtrl.isAuthenticated()" ui-sref-active="active">
+	    	<span style = "background-image: url(''+{{headerCtrl.userImageUrl}}+'')"></span>
+	    	<a ui-sref="profile" aria-expanded="false">{{headerCtrl.userName}}</a>
 	    </li>
 	</ul>
 </div>

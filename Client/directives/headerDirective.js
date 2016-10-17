@@ -18,12 +18,20 @@ function appHeader(){
 	function link(scope, elem, attrs){}
 	return directive;
 }
+// app.module('app').controller('headerController', headerController);
+headerController.$inject =['$auth', '$window'];
 
-headerController.$inject =['$auth']
-
-function headerController($auth){
-	var self = this;
-	self.isAuthenticated = $auth.isAuthenticated;
+function headerController($auth, $window){
+	var headerCtrl = this;
+	headerCtrl.isAuthenticated = $auth.isAuthenticated;
+	if(headerCtrl.isAuthenticated){
+		var currentUser = JSON.parse($window.localStorage.getItem('current_user'));
+		console.log(currentUser);
+		if(currentUser){
+			headerCtrl.userName = currentUser.firstName;
+			headerCtrl.userImageUrl = currentUser.imageUrl || currentUser.googleImageUrl;
+		}
+	}
 }
 
 })();

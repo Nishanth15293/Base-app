@@ -14,6 +14,9 @@ var UserSchema = new Schema({
     email: {
         type: String
     },
+    gmail: {
+        type: String
+    },
     password: {
         type: String
     },
@@ -24,6 +27,12 @@ var UserSchema = new Schema({
         type: String
     }, 
     displayName: {
+        type: String
+    },
+    imageUrl: {
+        type: String
+    },
+    googleImageUrl: {
         type: String
     }
 

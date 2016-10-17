@@ -115,6 +115,7 @@ signupController.$inject = [
                 .then(function(res){
                     console.log('Thanks for signing up ' + res.data.user.email + '!');
                     $auth.setToken(res.data.token);
+                    $window.localStorage.setItem('current_user', res.data.user);
                     $state.go('dashboard');
                 })
                 .catch(function(res){
@@ -143,9 +144,10 @@ loginController.$inject = [
 	'$state',
 	'$http',
 	'$auth',
+    '$window'
 ];
 
-function loginController($state, $http, $auth){
+function loginController($state, $http, $auth, $window){
     var loginCtrl = this;
 	loginCtrl.login = login;
 	loginCtrl.authenticate = authenticate;
@@ -162,6 +164,7 @@ function loginController($state, $http, $auth){
         $auth.login(payload)
         		.then(function(res){
         			console.log('Thanks for coming back ' + res.data.user.email + '!');
+                    $window.localStorage.setItem('current_user', JSON.stringify(res.data.user));
     				$state.go('dashboard');
 
         		})
@@ -172,7 +175,9 @@ function loginController($state, $http, $auth){
 
     function authenticate(provider) {
     	$auth.authenticate(provider).then(function(res){
+            console.log(res.data);
     		console.log('Thanks for signing in' + res.data.user.displayName + '!');
+            $window.localStorage.setItem('current_user', JSON.stringify(res.data.user));
     		$state.go('dashboard');
     	}, function(err){
     		console.log('Something went wrong, Please try again!');
@@ -187,11 +192,13 @@ angular.module('app').controller('logoutController', logoutController);
 
 logoutController.$inject = [
 	'$auth',
-	'$state'
+	'$state',
+	'$window'
 ];
 
-function logoutController($auth, $state){
+function logoutController($auth, $state, $window){
 	$auth.logout();
+	$window.localStorage.removeItem('current_user');
 	$state.go('login');
 }
 })();
@@ -200,19 +207,26 @@ function logoutController($auth, $state){
 
 angular.module('app').controller('profileController', profileController);
 profileController.$inject = [
-	'$http'
+	'$http',
+	'$window'
 ];
 
-function profileController($http){
-	var self = this;
+function profileController($http, $window){
+	var profileCtrl = this;
+	var currentUser = JSON.parse($window.localStorage.getItem('current_user'));
+	profileCtrl.firstName = currentUser.firstName;
+	profileCtrl.lastName = currentUser.lastName;
+	profileCtrl.email = currentUser.email || currentUser.gmail;
+	profileCtrl.imageUrl = currentUser.imageUrl || currentUser.googleImageUrl;
+	// $http.get('http://localhost:3000/profile')
+	// .success(function(profile){
+	// 	$scope.profile = profile;
+	// })
+	// .error(function(err){
+	// 	alert(err.message);
+	// })
 
-	$http.get('http://localhost:3000/profile')
-	.success(function(profile){
-		$scope.profile = profile;
-	})
-	.error(function(err){
-		alert(err.message);
-	})
+
 }
 
 })();
@@ -236,12 +250,20 @@ function appHeader(){
 	function link(scope, elem, attrs){}
 	return directive;
 }
+// app.module('app').controller('headerController', headerController);
+headerController.$inject =['$auth', '$window'];
 
-headerController.$inject =['$auth']
-
-function headerController($auth){
-	var self = this;
-	self.isAuthenticated = $auth.isAuthenticated;
+function headerController($auth, $window){
+	var headerCtrl = this;
+	headerCtrl.isAuthenticated = $auth.isAuthenticated;
+	if(headerCtrl.isAuthenticated){
+		var currentUser = JSON.parse($window.localStorage.getItem('current_user'));
+		console.log(currentUser);
+		if(currentUser){
+			headerCtrl.userName = currentUser.firstName;
+			headerCtrl.userImageUrl = currentUser.imageUrl || currentUser.googleImageUrl;
+		}
+	}
 }
 
 })();
@@ -267,10 +289,10 @@ angular.module('app').run(['$state', '$window' ,function($state, $window){
 }]);
 angular.module('app').run(['$templateCache', function($templateCache) {$templateCache.put('/Client/Partials/about.html','<div class=container-fluid><h1>About page</h1></div>');
 $templateCache.put('/Client/Partials/dashboard.html','<div class=jumbotron><h1>{{dashboardCtrl.message}}</h1></div>');
-$templateCache.put('/Client/Partials/header.html','<div><ul class="nav nav-tabs pull-right"><li ui-sref-active=active><a ui-sref=home aria-expanded=false>Home</a>{{headerCtrl.isAuthenticated}}</li><li ng-show=headerCtrl.isAuthenticated() ui-sref-active=active><a ui-sref=profile aria-expanded=false>Profile</a></li><li ng-hide=headerCtrl.isAuthenticated() ui-sref-active=active><a ui-sref=login aria-expanded=true>log In</a></li><li ng-show=headerCtrl.isAuthenticated() ui-sref-active=active><a ui-sref=dashboard aria-expanded=false>Dashboard</a></li><li ng-show=headerCtrl.isAuthenticated() ui-sref-active=active><a ui-sref=logout aria-expanded=false>Logout</a></li></ul></div>');
+$templateCache.put('/Client/Partials/header.html','<div><ul class="nav nav-tabs pull-right"><li ui-sref-active=active><a ui-sref=home aria-expanded=false>Home</a>{{headerCtrl.isAuthenticated}}</li><li ng-hide=headerCtrl.isAuthenticated() ui-sref-active=active><a ui-sref=login aria-expanded=true>log In</a></li><li ng-show=headerCtrl.isAuthenticated() ui-sref-active=active><a ui-sref=dashboard aria-expanded=false>Dashboard</a></li><li ng-show=headerCtrl.isAuthenticated() ui-sref-active=active><a ui-sref=logout aria-expanded=false>Logout</a></li><li ng-show=headerCtrl.isAuthenticated() ui-sref-active=active><span style="background-image: url(\'\'+{{headerCtrl.userImageUrl}}+\'\')"></span> <a ui-sref=profile aria-expanded=false>{{headerCtrl.userName}}</a></li></ul></div>');
 $templateCache.put('/Client/Partials/home.html','<div class="jumbotron text-center"><h1>Welcome Home {{hello}}!</h1><input type=text ng-model=hello ng-change=printChange()> <button class="btn btn-primary" ui-sref=about>About</button> <button class="btn btn-success" ui-sref=signup>Sign-up!</button> <button class="btn btn-success" ui-sref=login>Log-in!</button></div>');
 $templateCache.put('/Client/Partials/loginTemplate.html','<div class=container><form class=form-signin><h2 class=form-signin-heading>Please Login IN</h2><label for=inputEmail class=sr-only>Email address</label> <input type=email id=inputEmail class=form-control placeholder="Email address" ng-model=loginCtrl.email required autofocus> <label for=inputPassword class=sr-only>Password</label> <input type=password id=inputPassword class=form-control ng-model=loginCtrl.password placeholder=Password required><div class=checkbox><label><input type=checkbox value=remember-me> Remember me</label></div><button class="btn btn-lg btn-primary btn-block" type=submit ng-click=loginCtrl.login()>Login Me In!</button><br><p class="text-muted pull-right">Not registered yet?<br><a class=pull-right ui-sref=signup>Create a new Account</a></p></form><div class=row style="margin-top: 50px;"><div class=col-md-4><button class="btn btn-lg btn-danger btn-block" ng-click="loginCtrl.authenticate(\'google\')" type=button><i class="fa fa-google-plus" aria-hidden=true></i> Sign in with Google</button></div><div class=col-md-4><button class="btn btn-lg btn-primary btn-block" ng-click="loginCtrl.authenticate(\'facebook\')" type=button><i class="fa fa-facebook-square" aria-hidden=true></i> Sign in with facebook</button></div><div class=col-md-4><button class="btn btn-lg btn-default btn-block" ng-click=TwitterLogin() type=button><i class="fa fa-github" aria-hidden=true></i> Sign in with twitter</button></div></div></div>');
-$templateCache.put('/Client/Partials/profile.html','<div class="jumbotron form-signin"><h1>Profile</h1><label for=inputFirstName class=sr-only>First Name</label> <input type=text id=inputFirstName class=form-control placeholder="First Name" ng-model=profileCtrl.firstName> <label for=inputLastName class=sr-only>Last Name</label> <input type=text id=inputLastName class=form-control placeholder="Last Name" ng-model=profileCtrl.lastName> <label for=inputEmail class=sr-only>Email address</label> <input type=email id=inputEmail class=form-control placeholder="Email address" ng-model=profileCtrl.email><ul ng-repeat="interest in profileCtrl.interests">{{interest}}</ul></div>');
+$templateCache.put('/Client/Partials/profile.html','<div class="jumbotron form-signin"><h1>Profile</h1><img src={{profileCtrl.imageUrl}} alt="Display Picture" style="width:100px; height: 100px;"> <label for=inputFirstName class=sr-only>First Name</label> <input type=text id=inputFirstName class=form-control placeholder="First Name" ng-model=profileCtrl.firstName> <label for=inputLastName class=sr-only>Last Name</label> <input type=text id=inputLastName class=form-control placeholder="Last Name" ng-model=profileCtrl.lastName> <label for=inputEmail class=sr-only>Email address</label> <input type=email id=inputEmail class=form-control placeholder="Email address" ng-model=profileCtrl.email><ul ng-repeat="interest in profileCtrl.interests">{{interest}}</ul></div>');
 $templateCache.put('/Client/Partials/signupTemplate.html','<div class=container><form class=form-signin><h2 class="form-signin-heading text-muted">Sign Up!</h2><label for=inputFirstName class=sr-only>First Name</label> <input type=text id=inputFirstName class=form-control placeholder="First Name" ng-model=signupCtrl.firstName required autofocus> <label for=inputLastName class=sr-only>Last Name</label> <input type=text id=inputLastName class=form-control placeholder="Last Name" ng-model=signupCtrl.lastName autofocus> <label for=inputEmail class=sr-only>Email address</label> <input type=email id=inputEmail class=form-control placeholder="Email address" ng-model=signupCtrl.email required autofocus> <label for=inputPassword class=sr-only>Password</label> <input type=password id=inputPassword class=form-control placeholder=Password ng-model=signupCtrl.password required> <input type=password id=confirmPassword class=form-control placeholder="Confirm Password" required> <button class="btn btn-lg btn-primary btn-block" type=submit ng-click=signupCtrl.signup()>Sign Up</button><br><p class=pull-right>Already Registered? Login <a ui-sref=login>here</a></p></form></div>');}]);
 (function(){
 'use-strict';

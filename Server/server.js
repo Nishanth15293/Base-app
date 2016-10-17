@@ -153,7 +153,6 @@ app.post('/auth/google', function(req, res){
             json: true, 
             headers: headers
         }, function(err, response, profile){
-            // console.log(profile);
             User.findOne({googleId:profile.id}, function(err, foundUser){
                 if(err) throw err;
 
@@ -166,6 +165,8 @@ app.post('/auth/google', function(req, res){
                 newUser.firstName = profile.name.givenName;
                 newUser.lastName = profile.name.familyName;
                 newUser.displayName = profile.displayName;
+                newUser.googleImageUrl = profile.image.url;
+                newUser.gmail = profile.emails[0].value;
                 //can get other data as profile.emails.value, profile.tagline, profile.image.url 
 
                 newUser.save(function(err){
