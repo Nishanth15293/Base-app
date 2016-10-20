@@ -22,10 +22,16 @@ var UserSchema = new Schema({
     },
     googleId: {
         type: String
+    },
+    gpLink: {
+        type: String
     }, 
     facebookId: {
         type: String
     }, 
+    fbLink: {
+        type: String
+    },
     displayName: {
         type: String
     },
@@ -33,6 +39,9 @@ var UserSchema = new Schema({
         type: String
     },
     googleImageUrl: {
+        type: String
+    },
+    fbImageUrl: {
         type: String
     }
 

@@ -13,7 +13,7 @@ function profileController($http, $window){
 	profileCtrl.firstName = currentUser.firstName;
 	profileCtrl.lastName = currentUser.lastName;
 	profileCtrl.email = currentUser.email || currentUser.gmail;
-	profileCtrl.imageUrl = currentUser.imageUrl || currentUser.googleImageUrl;
+	profileCtrl.imageUrl = currentUser.imageUrl || currentUser.googleImageUrl || currentUser.fbImageUrl;
 	// $http.get('http://localhost:3000/profile')
 	// .success(function(profile){
 	// 	$scope.profile = profile;

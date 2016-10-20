@@ -5,9 +5,10 @@ var config = require('./../services/config');
 var User = require('./../models/userModel');
 
 module.exports = function(req, res){
+	var fields = ['id', 'email', 'first_name', 'last_name', 'link', 'name', 'birthday', 'about', 'cover', 'gender', 'hometown', 'education','relationship_status'];
 	var accessTokenUrl = 'https://graph.facebook.com/oauth/access_token';
-	var graphApiUrl = 'https://graph.facebook.com/me';
-
+	var graphApiUrl = 'https://graph.facebook.com/me?fields='+fields.join(',');
+	console.log(graphApiUrl);
 	var params = {
 		client_id : req.body.clientId,
 		redirect_uri : req.body.redirectUri,
@@ -25,9 +26,16 @@ module.exports = function(req, res){
 					return createSendToken(req, res, existingUser);
 				}
 
+
+
+
 				var newUser = new User();
 				newUser.facebookId = profile.id;
 				newUser.displayName = profile.name;
+				newUser.firstName = profile.first_name;
+				newUser.lastName = profile.last_name;
+				newUser.fbLink = profile.link;
+				newUser.fbImageUrl =  'https://graph.facebook.com/' + profile.id + '/picture?type=large';
 				newUser.save(function(err){
 					createSendToken(req, res, newUser);
 				});
