@@ -8,9 +8,10 @@ signupController.$inject = [
     '$state',
     '$http',
     '$scope',
-    '$auth'
+    '$auth',
+    '$window'
 ];
-    function signupController( $state, $http, $scope, $auth) {
+    function signupController( $state, $http, $scope, $auth, $window) {
         var signupCtrl = this;
         signupCtrl.signup = signup;
 
@@ -35,7 +36,7 @@ signupController.$inject = [
                 .then(function(res){
                     console.log('Thanks for signing up ' + res.data.user.email + '!');
                     $auth.setToken(res.data.token);
-                    $window.localStorage.setItem('current_user', res.data.user);
+                    $window.localStorage.setItem('current_user', JSON.stringify(res.data.user));
                     $state.go('dashboard');
                 })
                 .catch(function(res){

@@ -21,13 +21,16 @@ module.exports = function(req, res){
 
 		request.get({url: graphApiUrl, qs: accessToken, json: true}, function(err, response, profile){
 			console.log(profile);
+			// var query = or:{facebookId: profile.id, email: profile.email    
+				//query for both id and email,
+				//if found same email as profile.email add facebooks profile.id to it...
 			User.findOne({facebookId: profile.id}, function(err, existingUser){
 				if(existingUser){
+					if(profile.email){
+
+					}
 					return createSendToken(req, res, existingUser);
 				}
-
-
-
 
 				var newUser = new User();
 				newUser.facebookId = profile.id;

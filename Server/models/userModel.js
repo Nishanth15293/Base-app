@@ -43,6 +43,9 @@ var UserSchema = new Schema({
     },
     fbImageUrl: {
         type: String
+    },
+    active: {
+        type: Boolean
     }
 
 });
