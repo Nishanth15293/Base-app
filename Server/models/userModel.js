@@ -51,7 +51,6 @@ var UserSchema = new Schema({
 });
 
 UserSchema.methods.toJSON = function(){
-    console.log(this.toObject());
     var user = this.toObject();
     delete user.password;
     return user; 

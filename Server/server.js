@@ -3,7 +3,8 @@
  */
 var express = require('express');
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost:27017/angular2');
+var database = require('./config/database');
+mongoose.connect(database.url);
 var bodyParser = require('body-parser');
 var path = require('path');
 var app = express();
@@ -16,6 +17,8 @@ var createSendToken = require('./services/jwt');
 var localStrategy = require('./services/localStrategy');
 var profile = require('./routes/profile');
 var emailVerification = require('./services/emailVerification');
+var Item = require('./models/itemModel');
+
 
 // emailVerification.send('fake@fake.com');
 
@@ -50,10 +53,11 @@ app.get('/profile',profile);
 
 app.post('/auth/google', googleAuth);
 
+require('./routes/item.js')(app);
+
 app.get('*', function(req, res) {
     res.sendFile(path.resolve(__dirname, '../build/Client/index.html'));
 });
-
 
 app.listen(3000, function(){
     console.log("Express Server running at port 3000!");
