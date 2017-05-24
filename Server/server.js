@@ -18,6 +18,7 @@ var localStrategy = require('./services/localStrategy');
 var profile = require('./routes/profile');
 var emailVerification = require('./services/emailVerification');
 var Item = require('./models/itemModel');
+var User = require('./models/userModel');
 
 
 // emailVerification.send('fake@fake.com');
@@ -54,6 +55,23 @@ app.get('/profile',profile);
 app.post('/auth/google', googleAuth);
 
 require('./routes/item.js')(app);
+require('./routes/group.js')(app);
+
+app.put('/api/adduser/:user_id/:group_id', function(req, res){
+    var groupId = req.params.group_id;
+    var userId = req.params.user_id;
+
+    User.findByIdAndUpdate(
+    userId,
+    {$push: {groups: groupId}},
+    {safe: true, upsert: true},
+    function(err, user) {
+       if(err) res.send(err);
+
+       res.json(user);
+    });
+
+})
 
 app.get('*', function(req, res) {
     res.sendFile(path.resolve(__dirname, '../build/Client/index.html'));
