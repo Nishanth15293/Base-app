@@ -6,6 +6,10 @@
     "test": "node server.js",
     "start": "node server.js"
   },
+   "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com:Nishanth15293/Base-app.git"
+  },
   "author": "nishanth",
   "license": "ISC",
   "dependencies": {
