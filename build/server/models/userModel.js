@@ -4,6 +4,8 @@
 var mongoose = require('mongoose');
 var bcrypt = require('bcrypt-nodejs');
 var Schema = mongoose.Schema;
+var ObjectId = Schema.ObjectId;
+var userGroup = require('./GroupModel');
 
 // create a schema
 var UserSchema = new Schema({
@@ -46,12 +48,12 @@ var UserSchema = new Schema({
     },
     active: {
         type: Boolean
-    }
+    },
+    groups: [{ type: ObjectId, ref: 'UserGroup' }]
 
 });
 
 UserSchema.methods.toJSON = function(){
-    console.log(this.toObject());
     var user = this.toObject();
     delete user.password;
     return user; 

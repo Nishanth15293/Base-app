@@ -64,7 +64,7 @@ app.put('/api/adduser/:user_id/:group_id', function(req, res){
     User.findByIdAndUpdate(
     userId,
     {$push: {groups: groupId}},
-    {safe: true, upsert: true},
+    {new: true},
     function(err, user) {
        if(err) res.send(err);
 

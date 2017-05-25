@@ -3,7 +3,8 @@
  */
 var express = require('express');
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost:27017/angular2');
+var database = require('./config/database');
+mongoose.connect(database.url);
 var bodyParser = require('body-parser');
 var path = require('path');
 var app = express();
@@ -16,6 +17,9 @@ var createSendToken = require('./services/jwt');
 var localStrategy = require('./services/localStrategy');
 var profile = require('./routes/profile');
 var emailVerification = require('./services/emailVerification');
+var Item = require('./models/itemModel');
+var User = require('./models/userModel');
+
 
 // emailVerification.send('fake@fake.com');
 
@@ -50,10 +54,28 @@ app.get('/profile',profile);
 
 app.post('/auth/google', googleAuth);
 
+require('./routes/item.js')(app);
+require('./routes/group.js')(app);
+
+app.put('/api/adduser/:user_id/:group_id', function(req, res){
+    var groupId = req.params.group_id;
+    var userId = req.params.user_id;
+
+    User.findByIdAndUpdate(
+    userId,
+    {$push: {groups: groupId}},
+    {new: true},
+    function(err, user) {
+       if(err) res.send(err);
+
+       res.json(user);
+    });
+
+})
+
 app.get('*', function(req, res) {
     res.sendFile(path.resolve(__dirname, '../build/Client/index.html'));
 });
-
 
 app.listen(3000, function(){
     console.log("Express Server running at port 3000!");
